@@ -1,0 +1,1 @@
+ALTER TABLE "student_card" ADD COLUMN "device_id" varchar(100) NOT NULL;

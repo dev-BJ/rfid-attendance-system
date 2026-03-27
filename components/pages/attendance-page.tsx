@@ -46,8 +46,8 @@ export default function AttendancePage() {
       const params = new URLSearchParams();
       if (filters.student_id) params.append('student_id', filters.student_id);
       if (filters.device_id) params.append('device_id', filters.device_id);
-      if (filters.card_id) params.append('start_date', filters.card_id);
-      if (filters.date) params.append('end_date', filters.date);
+      if (filters.card_id) params.append('card_id', filters.card_id);
+      // if (filters.date) params.append('end_date', filters.date);
       params.append('page', page.toString());
       params.append('limit', '50');
       return `/api/attendance?${params}`;
@@ -151,7 +151,7 @@ export default function AttendancePage() {
               placeholder="Filter by device..."
               value={filters.device_id}
               onChange={(e) => {
-                setFilters({ ...filters, device_id: e.target.value });
+                setFilters({ ...filters, device_id: e.target.value.toUpperCase() });
                 setPage(1);
               }}
               className="bg-background border-border"
@@ -164,13 +164,13 @@ export default function AttendancePage() {
               placeholder="Filter by Card ID..."
               value={filters.card_id}
               onChange={(e) => {
-                setFilters({ ...filters, card_id: e.target.value });
+                setFilters({ ...filters, card_id: e.target.value.toUpperCase() });
                 setPage(1);
               }}
               className="bg-background border-border"
             />
           </div>
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-foreground mb-2">Date</label>
             <Input
               type="date"
@@ -181,7 +181,7 @@ export default function AttendancePage() {
               }}
               className="bg-background border-border"
             />
-          </div>
+          </div> */}
         </div>
       </Card>
 

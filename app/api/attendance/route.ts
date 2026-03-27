@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, studentAttendance } from '@/lib/db';
 import { and, gte, lte, eq, desc } from 'drizzle-orm';
+import { timeStamp } from 'console';
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
@@ -9,8 +10,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // Get filter parameters
     const deviceId = searchParams.get('device_id');
     const studentId = searchParams.get('student_id');
-    const startDate = searchParams.get('start_date');
-    const endDate = searchParams.get('end_date');
+    const cardId = searchParams.get('card_id');
+    // const timestamp = searchParams.get('timestamp');
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '50', 10);
 
@@ -25,9 +26,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       filters.push(eq(studentAttendance.studentId, studentId));
     }
 
-    if (startDate) {
-      filters.push(gte(studentAttendance.createdAt, new Date(startDate)));
+    if (cardId) {
+      filters.push(eq(studentAttendance.cardId, cardId));
     }
+
+    // if (timestamp) {
+    //   filters.push(gte(studentAttendance.timestamp, new Date(timestamp)));
+    // }
 
     // if (endDate) {
     //   const endDateObj = new Date(endDate);

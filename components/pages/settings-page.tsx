@@ -162,7 +162,7 @@ export default function SettingsPage() {
       setMessage(`Failed to send credentials: ${error instanceof Error ? error.message : "Unknown error"}`)
     } finally {
       // setIsSubmitting(false)
-      setWifiConfig({ ssid: '', password: '' });
+      // setWifiConfig({ ssid: '', password: '' });
       setShowWifiForm(false);
     }
   }, [device, wifiConfig])
@@ -304,7 +304,7 @@ export default function SettingsPage() {
                 type="text"
                 placeholder="e.g., MyNetwork"
                 value={wifiConfig.ssid}
-                onChange={(e) => setWifiConfig({ ...wifiConfig, ssid: e.target.value })}
+                onChange={(e) => setWifiConfig({ ...wifiConfig, ssid: e.target.value.trim() })}
                 className="bg-background border-border"
                 required
               />
@@ -318,7 +318,7 @@ export default function SettingsPage() {
                 type="text"
                 placeholder="Enter WiFi password"
                 value={wifiConfig.password}
-                onChange={(e) => setWifiConfig({ ...wifiConfig, password: e.target.value })}
+                onChange={(e) => setWifiConfig({ ...wifiConfig, password: e.target.value.trim() })}
                 className="bg-background border-border"
                 required
               />

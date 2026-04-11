@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, studentAttendance } from '@/lib/db';
 import { and, gte, lte, eq, desc } from 'drizzle-orm';
-import { timeStamp } from 'console';
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {

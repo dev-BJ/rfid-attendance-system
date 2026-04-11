@@ -5,6 +5,6 @@ export default defineConfig({
   schema: './lib/db/schema.ts',
   out: './drizzle',
   dbCredentials: {
-    url: process.env.DATABASE_URL || 'postgresql://localhost/rfid_attendance',
+    url: process.env.DATABASE_URL,
   },
 });

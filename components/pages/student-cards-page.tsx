@@ -136,7 +136,7 @@ export default function StudentCardsPage() {
                   placeholder="e.g., STU-2024-001"
                   value={formData.student_id}
                   onChange={(e) =>
-                    setFormData({ ...formData, student_id: e.target.value })
+                    setFormData({ ...formData, student_id: e.target.value.toUpperCase().trim() })
                   }
                   className="bg-background border-border"
                   required
@@ -162,7 +162,7 @@ export default function StudentCardsPage() {
                   placeholder="e.g., CARD-001"
                   value={formData.card_id}
                   onChange={(e) =>
-                    setFormData({ ...formData, card_id: e.target.value.toUpperCase() })
+                    setFormData({ ...formData, card_id: e.target.value.toUpperCase().trim() })
                   }
                   className="bg-background border-border"
                   required
@@ -175,7 +175,7 @@ export default function StudentCardsPage() {
                   placeholder="e.g., device-001"
                   value={formData.device_id}
                   onChange={(e) =>
-                    setFormData({ ...formData, device_id: e.target.value.toUpperCase() })
+                    setFormData({ ...formData, device_id: e.target.value.toUpperCase().trim() })
                   }
                   className="bg-background border-border"
                   required
@@ -188,7 +188,7 @@ export default function StudentCardsPage() {
                   placeholder="e.g., COM"
                   value={formData.course_code}
                   onChange={(e) =>
-                    setFormData({ ...formData, course_code: e.target.value })
+                    setFormData({ ...formData, course_code: e.target.value.toUpperCase().trim() })
                   }
                   className="bg-background border-border"
                   required
@@ -202,7 +202,7 @@ export default function StudentCardsPage() {
                   pattern="^(\+234|0)(?:[789][01]\d{8}|2\d{8,9})$"
                   value={formData.phone_number}
                   onChange={(e) =>
-                    setFormData({ ...formData, phone_number: e.target.value })
+                    setFormData({ ...formData, phone_number: e.target.value.trim() })
                   }
                   className="bg-background border-border"
                   required
@@ -216,7 +216,7 @@ export default function StudentCardsPage() {
                   placeholder="e.g., +234..."
                   value={formData.parent_phone_number}
                   onChange={(e) =>
-                    setFormData({ ...formData, parent_phone_number: e.target.value })
+                    setFormData({ ...formData, parent_phone_number: e.target.value.trim() })
                   }
                   className="bg-background border-border"
                   required

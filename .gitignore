@@ -8,8 +8,7 @@ __v0_jsx-dev-runtime.ts
 next.user-config.*
 
 # Environment variables
-.env*.local
-.env
+# .env
 
 # Common ignores
 node_modules
@@ -17,3 +16,5 @@ node_modules
 .DS_Store
 
 sql
+
+.env

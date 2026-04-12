@@ -1,0 +1,16 @@
+-- Database Client 8.4.5
+-- Host: 127.0.0.1 Port: 5432 Database: public Schema: public
+-- Dump is still an early version, please use the dumped SQL with caution
+
+DROP TABLE IF EXISTS student_attendance;
+CREATE TABLE student_attendance(
+    id SERIAL NOT NULL,
+    card_id varchar(100) NOT NULL,
+    student_id varchar(100) NOT NULL,
+    student_name varchar(255) NOT NULL,
+    device_id varchar(100) NOT NULL,
+    timestamp timestamp without time zone NOT NULL DEFAULT now(),
+    created_at timestamp without time zone NOT NULL DEFAULT now(),
+    PRIMARY KEY(id)
+);
+INSERT INTO student_attendance(card_id,student_id,student_name,device_id,timestamp,created_at) VALUES('C3139340','cs/23/0027','John Doe','VGFPRE34','2026-03-26 19:37:14','2026-03-26 19:38:55.672226'),('D0225732','cs/24/0027','Mary Doe','VGFPRE34','2026-03-26 20:06:07','2026-03-26 20:07:16.495852');

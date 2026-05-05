@@ -279,7 +279,7 @@ export default function StudentCardsPage() {
                 <td className="px-6 py-4 text-foreground font-mono">{card.phoneNumber}</td>
                 <td className="px-6 py-4 text-foreground font-mono">{card.parentPhoneNumber}</td>
                 <td className="px-6 py-4 text-muted-foreground">
-                  {new Date(card.registeredAt).toLocaleDateString()}
+                  {new Date(card.registeredAt).toLocaleString()}
                 </td>
                 <td className="px-6 py-4 text-right space-x-2 flex justify-end">
                   <Button

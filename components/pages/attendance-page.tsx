@@ -87,7 +87,7 @@ export default function AttendancePage() {
       a.deviceId,
       a.studentName,
       a.cardId,
-      a.timestamp || 'N/A'
+      new Date(a.timestamp).toLocaleString() || 'N/A'
     ]);
 
     const csv = [headers, ...rows].map((row) => row.join(',')).join('\n');
@@ -195,7 +195,7 @@ export default function AttendancePage() {
               <th className="px-6 py-3 text-left font-semibold text-foreground">Device ID</th>
               <th className="px-6 py-3 text-left font-semibold text-foreground">Card ID</th>
               <th className="px-6 py-3 text-left font-semibold text-foreground">Timestamp</th>
-              <th className="px-6 py-3 text-left font-semibold text-foreground">Created At</th>
+              {/* <th className="px-6 py-3 text-left font-semibold text-foreground">Created At</th> */}
             </tr>
           </thead>
           <tbody>
@@ -206,7 +206,7 @@ export default function AttendancePage() {
                 <td className="px-6 py-4 text-foreground">{record.deviceId}</td>
                 <td className="px-6 py-4 text-foreground">{record.cardId}</td>
                 <td className="px-6 py-4 text-foreground font-mono text-sm">
-                  {new Date(record.timestamp).toLocaleTimeString()}
+                  {new Date(record.timestamp).toLocaleString()}
                 </td>
                 {/* <td className="px-6 py-4 text-foreground font-mono text-sm">
                   {record.check_out_time
@@ -218,7 +218,7 @@ export default function AttendancePage() {
                     ? `${Math.floor(record.duration_minutes / 60)}h ${record.duration_minutes % 60}m`
                     : '—'}
                 </td> */}
-                <td className="px-6 py-4 text-muted-foreground">{new Date(record.createdAt).toLocaleTimeString()}</td>
+                {/* <td className="px-6 py-4 text-muted-foreground">{new Date(record.createdAt).toLocaleTimeString()}</td> */}
               </tr>
             ))}
           </tbody>

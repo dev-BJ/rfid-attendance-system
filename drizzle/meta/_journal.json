@@ -5,22 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1774466787989,
-      "tag": "0000_rich_cargill",
+      "when": 1778688268533,
+      "tag": "0000_lyrical_jack_power",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1774534970893,
-      "tag": "0001_amusing_shinobi_shaw",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1774535826555,
-      "tag": "0002_lean_scourge",
+      "when": 1778690907497,
+      "tag": "0001_outgoing_doomsday",
       "breakpoints": true
     }
   ]

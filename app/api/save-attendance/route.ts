@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, studentCards, studentAttendance, systemDevices } from '@/lib/db';
+import { db, studentCard, studentAttendance, systemDevice } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { SaveAttendanceRequest, SaveAttendanceResponse } from '@/lib/types';
 
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<SaveAtten
     }
 
     // Verify card exists and belongs to student
-    const card = await db.select().from(studentCards).where(eq(studentCards.cardId, card_id)).then(res => res[0]);
+    const card = await db.select().from(studentCard).where(eq(studentCard.cardId, card_id)).then(res => res[0]);
     console.log("Card details: ",card)
     if (!card) {
       return NextResponse.json(
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<SaveAtten
     }
 
     // Get device information
-    // const device = await db.select().from(systemDevices).where(eq(systemDevices.deviceId, device_id)).then(res => res[0]);
+    // const device = await db.select().from(systemDevice).where(eq(systemDevice.deviceId, device_id)).then(res => res[0]);
     // console.log("Device", device)
 
     // if (!device) {
@@ -61,10 +61,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<SaveAtten
     const checkInDate = new Date(combinedString);
     const result = await db.insert(studentAttendance).values({
       cardId: card_id,
+      courseCode: card.courseCode,
       studentId: card.studentId,
       studentName: card.studentName,
       deviceId: device_id,
-      timestamp: checkInDate,
+      timestamp: checkInDate.toISOString(),
     });
 
     return NextResponse.json({

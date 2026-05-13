@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db, studentCards, studentAttendance } from "@/lib/db";
-import { eq, gt } from "drizzle-orm";
+import { db, studentCard, studentAttendance } from "@/lib/db";
+import { eq, and } from "drizzle-orm";
 import { CheckIdRequest, CheckIdResponse } from "@/lib/types";
 
 export async function GET(request: NextRequest): Promise<any> {
@@ -23,8 +23,8 @@ export async function GET(request: NextRequest): Promise<any> {
     // Check if card exists in database
     const card = await db
       .select()
-      .from(studentCards)
-      .where(eq(studentCards.cardId, card_id), eq(studentCards.deviceId, device_id))
+      .from(studentCard)
+      .where(and(eq(studentCard.cardId, card_id), eq(studentCard.deviceId, device_id)))
       .then((res) => res[0]);
 
     if (!card) {
@@ -40,6 +40,9 @@ export async function GET(request: NextRequest): Promise<any> {
     return NextResponse.json(
       {
         success: true,
+        parent_phone: card.parentPhoneNumber,
+        matric_no: card.studentId,
+        course_code: card.courseCode,
       },
       { status: 200 },
     );
@@ -77,8 +80,8 @@ export async function PUT(request: NextRequest): Promise<any> {
     // Check if card exists in database
     const card = await db
       .select()
-      .from(studentCards)
-      .where(eq(studentCards.cardId, card_id), eq(studentCards.deviceId, device_id))
+      .from(studentCard)
+      .where(and(eq(studentCard.cardId, card_id), eq(studentCard.deviceId, device_id)))
       .then((res) => res[0]);
 
     if (!card) {
@@ -92,11 +95,11 @@ export async function PUT(request: NextRequest): Promise<any> {
     }
 
     await db
-      .update(studentCards)
+      .update(studentCard)
       .set({
         status: "active",
       })
-      .where(eq(studentCards.cardId, card_id));
+      .where(eq(studentCard.cardId, card_id));
 
     return NextResponse.json(
       {

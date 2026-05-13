@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, studentCards } from '@/lib/db';
+import { db, studentCard } from '@/lib/db';
 import type { StudentCard } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 
@@ -15,7 +15,7 @@ interface StudentCardResponse {
 
 export async function GET(): Promise<NextResponse<StudentCard[]>> {
   try {
-    const cards = await db.select().from(studentCards);
+    const cards = await db.select().from(studentCard);
     return NextResponse.json(cards);
   } catch (error) {
     console.error('Error fetching cards:', error);
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Check if RFID code already exists
-    const existingCard = await db.select().from(studentCards).where(eq(studentCards.cardId, card_id)).limit(1).then(results => results[0]);
+    const existingCard = await db.select().from(studentCard).where(eq(studentCard.cardId, card_id)).limit(1).then(results => results[0]);
 
     if (existingCard) {
       return NextResponse.json(
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const result = await db.insert(studentCards).values({
+    const result = await db.insert(studentCard).values({
       cardId: card_id,
       studentId: student_id,
       studentName: student_name,
@@ -81,7 +81,7 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const existingCard = await db.select().from(studentCards).where(eq(studentCards.cardId, card_id)).limit(1).then(results => results[0]);
+    const existingCard = await db.select().from(studentCard).where(eq(studentCard.cardId, card_id)).limit(1).then(results => results[0]);
 
     if (!existingCard) {
       return NextResponse.json(
@@ -90,12 +90,12 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    await db.update(studentCards)
+    await db.update(studentCard)
       .set({
         ...updates,
         updatedAt: new Date(),
       })
-      .where(eq(studentCards.cardId, card_id));
+      .where(eq(studentCard.cardId, card_id));
 
     return NextResponse.json({
       success: true,
@@ -124,7 +124,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
 
     const { eq } = await import('drizzle-orm');
 
-    const existingCard = await db.select().from(studentCards).where(eq(studentCards.cardId, rfid_code)).limit(1).then(results => results[0]);
+    const existingCard = await db.select().from(studentCard).where(eq(studentCard.cardId, rfid_code)).limit(1).then(results => results[0]);
 
     if (!existingCard) {
       return NextResponse.json(
@@ -133,8 +133,8 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    await db.delete(studentCards)
-      .where(eq(studentCards.cardId, rfid_code));
+    await db.delete(studentCard)
+      .where(eq(studentCard.cardId, rfid_code));
 
     return NextResponse.json({
       success: true,

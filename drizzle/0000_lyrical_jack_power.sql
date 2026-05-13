@@ -1,6 +1,7 @@
 CREATE TABLE "student_attendance" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"card_id" varchar(100) NOT NULL,
+	"course_code" varchar(155) DEFAULT 'COM' NOT NULL,
 	"student_id" varchar(100) NOT NULL,
 	"student_name" varchar(255) NOT NULL,
 	"device_id" varchar(100) NOT NULL,
@@ -8,18 +9,20 @@ CREATE TABLE "student_attendance" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "student_card_id" (
+CREATE TABLE "student_card" (
 	"id" serial PRIMARY KEY NOT NULL,
+	"device_id" varchar(100) NOT NULL,
 	"card_id" varchar(100) NOT NULL,
 	"course_code" varchar(155) NOT NULL,
 	"student_name" varchar(255) NOT NULL,
 	"student_id" varchar(100) NOT NULL,
 	"phone_number" varchar(50) NOT NULL,
 	"parent_phone_number" varchar(50) NOT NULL,
+	"status" varchar(50) DEFAULT 'active' NOT NULL,
 	"registered_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "student_card_id_card_id_unique" UNIQUE("card_id"),
-	CONSTRAINT "student_card_id_student_id_unique" UNIQUE("student_id")
+	CONSTRAINT "student_card_card_id_unique" UNIQUE("card_id"),
+	CONSTRAINT "student_card_student_id_unique" UNIQUE("student_id")
 );
 --> statement-breakpoint
 CREATE TABLE "system_device" (

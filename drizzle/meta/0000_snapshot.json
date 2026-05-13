@@ -1,5 +1,5 @@
 {
-  "id": "97a3cf10-ae24-4974-a63f-ed4e94388ce7",
+  "id": "34573377-65bf-4989-a9c2-f8b5beffcf93",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -19,6 +19,13 @@
           "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true
+        },
+        "course_code": {
+          "name": "course_code",
+          "type": "varchar(155)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'COM'"
         },
         "student_id": {
           "name": "student_id",
@@ -61,14 +68,20 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.student_card_id": {
-      "name": "student_card_id",
+    "public.student_card": {
+      "name": "student_card",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "serial",
           "primaryKey": true,
+          "notNull": true
+        },
+        "device_id": {
+          "name": "device_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
           "notNull": true
         },
         "card_id": {
@@ -107,6 +120,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "status": {
+          "name": "status",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
         "registered_at": {
           "name": "registered_at",
           "type": "timestamp",
@@ -126,15 +146,15 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "student_card_id_card_id_unique": {
-          "name": "student_card_id_card_id_unique",
+        "student_card_card_id_unique": {
+          "name": "student_card_card_id_unique",
           "nullsNotDistinct": false,
           "columns": [
             "card_id"
           ]
         },
-        "student_card_id_student_id_unique": {
-          "name": "student_card_id_student_id_unique",
+        "student_card_student_id_unique": {
+          "name": "student_card_student_id_unique",
           "nullsNotDistinct": false,
           "columns": [
             "student_id"

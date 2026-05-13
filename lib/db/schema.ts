@@ -1,104 +1,50 @@
-import { pgTable, text, serial, timestamp, boolean, integer, varchar } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { pgTable, uniqueIndex, serial, varchar, timestamp } from "drizzle-orm/pg-core"
+import { $Type, sql } from "drizzle-orm"
 
-// System Devices table - for RFID scanner devices
-// export const systemDevices = pgTable('system_device', {
-//   id: serial('id').primaryKey(),
-//   deviceId: varchar('device_id', { length: 100 }).notNull().unique(),
-//   name: varchar('name', { length: 255 }).notNull(),
-//   location: varchar('location', { length: 255 }).notNull(),
-//   status: varchar('status', { length: 50 }).notNull().default('inactive'), // active, inactive, error
-//   lastSeen: timestamp('last_seen'),
-//   createdAt: timestamp('created_at').defaultNow().notNull(),
-//   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-// });
 
-export const systemDevices = pgTable('system_device', {
-  id: serial('id').primaryKey(),
-  deviceId: varchar('device_id', { length: 100 }).notNull().unique(),
-  faculty: varchar('faculty', { length: 255 }).notNull(),
-  departments: varchar('departments', { length: 255 }).notNull(),
-  levels: varchar('levels', { length: 255 }).notNull(), // active, inactive, error
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
 
-export type SystemDevice = typeof systemDevices.$inferSelect;
+export const studentCard = pgTable("student_card", {
+	id: serial().primaryKey().notNull(),
+	cardId: varchar("card_id", { length: 100 }).notNull(),
+	courseCode: varchar("course_code", { length: 155 }).notNull(),
+	studentName: varchar("student_name", { length: 255 }).notNull(),
+	studentId: varchar("student_id", { length: 100 }).notNull(),
+	phoneNumber: varchar("phone_number", { length: 50 }).notNull(),
+	parentPhoneNumber: varchar("parent_phone_number", { length: 50 }).notNull(),
+	registeredAt: timestamp("registered_at", { mode: 'string' }).defaultNow().notNull(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
+	status: varchar({ length: 50 }).default('active').notNull(),
+	deviceId: varchar("device_id", { length: 100 }).notNull(),
+}, (table) => [
+	uniqueIndex("student_card_card_id_unique").using("btree", table.cardId.asc().nullsLast().op("text_ops")),
+	uniqueIndex("student_card_student_id_unique").using("btree", table.studentId.asc().nullsLast().op("text_ops")),
+]);
 
-// Student RFID Cards table
-// export const studentCards = pgTable('student_card_id', {
-//   id: serial('id').primaryKey(),
-//   cardId: varchar('card_id', { length: 100 }).notNull().unique(),
-//   studentName: varchar('student_name', { length: 255 }).notNull(),
-//   studentId: varchar('student_id', { length: 100 }).notNull().unique(),
-//   status: varchar('status', { length: 50 }).notNull().default('active'), // active, inactive, lost
-//   registeredAt: timestamp('registered_at').defaultNow().notNull(),
-//   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-// });
+export type StudentCard = typeof studentCard.$inferSelect;
 
-export const studentCards = pgTable('student_card', {
-  id: serial('id').primaryKey(),
-  deviceId: varchar('device_id', { length: 100 }).notNull(),
-  cardId: varchar('card_id', { length: 100 }).notNull().unique(),
-  courseCode: varchar('course_code', { length: 155 }).notNull(),
-  studentName: varchar('student_name', { length: 255 }).notNull(),
-  studentId: varchar('student_id', { length: 100 }).notNull().unique(),
-  phoneNumber: varchar('phone_number', { length: 50 }).notNull(),
-  parentPhoneNumber: varchar('parent_phone_number', { length: 50 }).notNull(),
-  status: varchar('status', { length: 50 }).notNull().default('active'), // active, inactive, lost
-  registeredAt: timestamp('registered_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
+export const systemDevice = pgTable("system_device", {
+	id: serial().primaryKey().notNull(),
+	deviceId: varchar("device_id", { length: 100 }).notNull(),
+	faculty: varchar({ length: 255 }).notNull(),
+	departments: varchar({ length: 255 }).notNull(),
+	levels: varchar({ length: 255 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+	uniqueIndex("system_device_device_id_unique").using("btree", table.deviceId.asc().nullsLast().op("text_ops")),
+]);
 
-export type StudentCard = typeof studentCards.$inferSelect;
+export type SystemDevice = typeof systemDevice.$inferSelect;
 
-// Attendance Records table
-// export const studentAttendance = pgTable('student_attendance', {
-//   id: serial('id').primaryKey(),
-//   cardId: varchar('card_id', { length: 100 }).notNull(),
-//   studentId: varchar('student_id', { length: 100 }).notNull(),
-//   studentName: varchar('student_name', { length: 255 }).notNull(),
-//   deviceId: varchar('device_id', { length: 100 }).notNull(),
-//   deviceName: varchar('device_name', { length: 255 }).notNull(),
-//   checkedInAt: timestamp('checked_in_at').notNull(),
-//   checkedOutAt: timestamp('checked_out_at'),
-//   duration: integer('duration'), // in seconds
-//   createdAt: timestamp('created_at').defaultNow().notNull(),
-// });
-
-export const studentAttendance = pgTable('student_attendance', {
-  id: serial('id').primaryKey(),
-  cardId: varchar('card_id', { length: 100 }).notNull(),
-  studentId: varchar('student_id', { length: 100 }).notNull(),
-  studentName: varchar('student_name', { length: 255 }).notNull(),
-  deviceId: varchar('device_id', { length: 100 }).notNull(),
-  timestamp: timestamp('timestamp').defaultNow().notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+export const studentAttendance = pgTable("student_attendance", {
+	id: serial().primaryKey().notNull(),
+	cardId: varchar("card_id", { length: 100 }).notNull(),
+	studentId: varchar("student_id", { length: 100 }).notNull(),
+	studentName: varchar("student_name", { length: 255 }).notNull(),
+	deviceId: varchar("device_id", { length: 100 }).notNull(),
+	timestamp: timestamp({ mode: 'string' }).defaultNow().notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+	courseCode: varchar("course_code", { length: 155 }).notNull(),
 });
 
 export type StudentAttendance = typeof studentAttendance.$inferSelect;
-
-// Define relations
-export const systemDevicesRelations = relations(systemDevices, ({ many }) => ({
-  attendance: many(studentAttendance),
-  cards: many(studentCards),
-}));
-
-export const studentCardsRelations = relations(studentCards, ({ many, one }) => ({
-  attendance: many(studentAttendance),
-  device: one(systemDevices, {
-    fields: [studentCards.deviceId],
-    references: [systemDevices.deviceId],
-  }),
-}));
-
-export const studentAttendanceRelations = relations(studentAttendance, ({ one }) => ({
-  device: one(systemDevices, {
-    fields: [studentAttendance.deviceId],
-    references: [systemDevices.deviceId],
-  }),
-  card: one(studentCards, {
-    fields: [studentAttendance.cardId],
-    references: [studentCards.cardId],
-  }),
-}));

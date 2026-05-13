@@ -1,6 +1,6 @@
 {
-  "id": "03f4db4a-9a88-4e60-b0a2-b8f984beb668",
-  "prevId": "97a3cf10-ae24-4974-a63f-ed4e94388ce7",
+  "id": "529a0d7e-ffe1-455a-9c06-875f8cdaecba",
+  "prevId": "34573377-65bf-4989-a9c2-f8b5beffcf93",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -51,6 +51,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "course_code": {
+          "name": "course_code",
+          "type": "varchar(155)",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -107,13 +113,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "status": {
-          "name": "status",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'active'"
-        },
         "registered_at": {
           "name": "registered_at",
           "type": "timestamp",
@@ -127,27 +126,58 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "device_id": {
+          "name": "device_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
+      "indexes": {
         "student_card_card_id_unique": {
           "name": "student_card_card_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
-            "card_id"
-          ]
+            {
+              "expression": "card_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "student_card_student_id_unique": {
           "name": "student_card_student_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
-            "student_id"
-          ]
+            {
+              "expression": "student_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -201,18 +231,27 @@
           "default": "now()"
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
+      "indexes": {
         "system_device_device_id_unique": {
           "name": "system_device_device_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
-            "device_id"
-          ]
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

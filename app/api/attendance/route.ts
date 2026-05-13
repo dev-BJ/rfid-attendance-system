@@ -29,16 +29,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       filters.push(eq(studentAttendance.cardId, cardId));
     }
 
-    // if (timestamp) {
-    //   filters.push(gte(studentAttendance.timestamp, new Date(timestamp)));
-    // }
-
-    // if (endDate) {
-    //   const endDateObj = new Date(endDate);
-    //   endDateObj.setHours(23, 59, 59, 999);
-    //   filters.push(lte(studentAttendance.checkedInAt, endDateObj));
-    // }
-
     // Get total count
     const totalRecords = await db.select().from(studentAttendance).where(filters.length > 0 ? and(...filters) : undefined);
 

@@ -1,101 +1,99 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import type { StudentAttendance } from '@/lib/db';
-import { Download, Filter } from 'lucide-react';
-import useSWR from 'swr';
+import { useEffect, useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import type { StudentAttendance } from "@/lib/db";
+import { Download, Filter } from "lucide-react";
+import useSWR from "swr";
 
 export default function AttendancePage() {
   const [attendance, setAttendance] = useState<StudentAttendance[]>([]);
+  const [filteredAttendance, setFilteredAttendance] = useState<
+    StudentAttendance[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
-    student_id: '',
-    device_id: '',
-    card_id: '',
-    date: '',
+    student_id: "",
+    device_id: "",
+    card_id: "",
+    course_code: "",
   });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const fetchAttendance = async () => {
-    try {
-      const params = new URLSearchParams();
-      if (filters.student_id) params.append('student_id', filters.student_id);
-      if (filters.device_id) params.append('device_id', filters.device_id);
-      if (filters.card_id) params.append('start_date', filters.card_id);
-      if (filters.date) params.append('end_date', filters.date);
-      params.append('page', page.toString());
-      params.append('limit', '50');
-
-      const res = await fetch(`/api/attendance?${params}`);
-      const data = await res.json();
-      setAttendance(data.data || []);
-      setTotalPages(data.pagination?.totalPages || 1);
-    } catch (error) {
-      console.error('Error fetching attendance:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const { data, error, mutate, isLoading } = useSWR(
-    () => {
-      const params = new URLSearchParams();
-      if (filters.student_id) params.append('student_id', filters.student_id);
-      if (filters.device_id) params.append('device_id', filters.device_id);
-      if (filters.card_id) params.append('card_id', filters.card_id);
-      // if (filters.date) params.append('end_date', filters.date);
-      params.append('page', page.toString());
-      params.append('limit', '50');
-      return `/api/attendance?${params}`;
-    },
+  // 1. SWR only depends on the 'page' state variable
+  const {
+    data: serverData,
+    error,
+    isValidating,
+    isLoading,
+  } = useSWR(
+    `/api/attendance?page=${page}&limit=50`,
     async (url) => {
       const res = await fetch(url);
-      const data = await res.json();
-      console.log("Data", data)
-      setTotalPages(data.pagination?.totalPages || 1);
-      setAttendance(data.data || []);
-      return data.data || [];
-    }
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json(); // Return the raw object containing data and pagination
+    },
+    { keepPreviousData: true },
   );
 
   useEffect(() => {
-    // fetchAttendance();
-    mutate();
-  }, [filters, page]);
+    if (serverData) {
+      setAttendance(serverData.data || []); // Set the attendance data from the server response
+      setFilteredAttendance(serverData.data || []);
+      setTotalPages(serverData.pagination.totalPages); // Update total pages from server response
+      setLoading(false);
+    }
+  }, [serverData]);
 
-  // useEffect(() => {
-  //   if (data) {
-  //     setAttendance(data.data || []);
-  //     // setTotalPages(data.pagination?.totalPages || 1);
-  //   }
-  // }, [data]);
-
+  useEffect(() => {
+    setFilteredAttendance(
+      attendance.filter((record) => {
+        return (
+          (filters.student_id
+            ? record.studentId.includes(filters.student_id)
+            : true) &&
+          (filters.device_id
+            ? record.deviceId.includes(filters.device_id)
+            : true) &&
+          (filters.card_id ? record.cardId.includes(filters.card_id) : true) &&
+          (filters.course_code
+            ? record.courseCode?.includes(filters.course_code)
+            : true)
+        );
+      }),
+    );
+  }, [filters]);
 
   const handleExportCSV = () => {
     if (attendance.length === 0) {
-      alert('No attendance records to export');
+      alert("No attendance records to export");
       return;
     }
 
-    const headers = ['Student ID', 'Device ID', 'Student Name', 'Card ID', 'Timetsamp'];
+    const headers = [
+      "Student ID",
+      "Device ID",
+      "Student Name",
+      "Card ID",
+      "Timestamp",
+    ];
     const rows = attendance.map((a) => [
       a.studentId,
       a.deviceId,
       a.studentName,
       a.cardId,
-      new Date(a.timestamp).toLocaleString() || 'N/A'
+      new Date(a.timestamp).toLocaleString() || "N/A",
     ]);
 
-    const csv = [headers, ...rows].map((row) => row.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
+    const csv = [headers, ...rows].map((row) => row.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `attendance-${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `attendance-${new Date().toISOString().split("T")[0]}.csv`;
     a.click();
   };
 
@@ -112,8 +110,12 @@ export default function AttendancePage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-foreground">Attendance History</h1>
-          <p className="text-muted-foreground mt-2">View and track attendance records</p>
+          <h1 className="text-4xl font-bold text-foreground">
+            Attendance History
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            View and track attendance records
+          </p>
         </div>
         <Button
           onClick={handleExportCSV}
@@ -132,56 +134,74 @@ export default function AttendancePage() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Student ID</label>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Student ID
+            </label>
             <Input
               type="text"
               placeholder="Filter by student..."
               value={filters.student_id}
               onChange={(e) => {
                 setFilters({ ...filters, student_id: e.target.value });
-                setPage(1);
+                // setPage(1);
               }}
               className="bg-background border-border"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Device ID</label>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Device ID
+            </label>
             <Input
               type="text"
               placeholder="Filter by device..."
               value={filters.device_id}
               onChange={(e) => {
-                setFilters({ ...filters, device_id: e.target.value.toUpperCase() });
-                setPage(1);
+                setFilters({
+                  ...filters,
+                  device_id: e.target.value.toUpperCase(),
+                });
+                // setPage(1);
               }}
               className="bg-background border-border"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Card ID</label>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Card ID
+            </label>
             <Input
               type="text"
               placeholder="Filter by Card ID..."
               value={filters.card_id}
               onChange={(e) => {
-                setFilters({ ...filters, card_id: e.target.value.toUpperCase() });
-                setPage(1);
+                setFilters({
+                  ...filters,
+                  card_id: e.target.value.toUpperCase(),
+                });
+                // setPage(1);
               }}
               className="bg-background border-border"
             />
           </div>
-          {/* <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Date</label>
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Course Code
+            </label>
             <Input
-              type="date"
-              value={filters.date}
+              type="text"
+              placeholder="Filter by Course Code..."
+              value={filters.course_code}
               onChange={(e) => {
-                setFilters({ ...filters, date: e.target.value });
-                setPage(1);
+                setFilters({
+                  ...filters,
+                  course_code: e.target.value.toUpperCase(),
+                });
+                // setPage(1);
               }}
               className="bg-background border-border"
             />
-          </div> */}
+          </div>
         </div>
       </Card>
 
@@ -190,42 +210,53 @@ export default function AttendancePage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
-            <th className="px-6 py-3 text-left font-semibold text-foreground">Student Name</th>
-              <th className="px-6 py-3 text-left font-semibold text-foreground">Student ID</th>
-              <th className="px-6 py-3 text-left font-semibold text-foreground">Device ID</th>
-              <th className="px-6 py-3 text-left font-semibold text-foreground">Card ID</th>
-              <th className="px-6 py-3 text-left font-semibold text-foreground">Timestamp</th>
-              {/* <th className="px-6 py-3 text-left font-semibold text-foreground">Created At</th> */}
+              <th className="px-6 py-3 text-left font-semibold text-foreground">
+                Student Name
+              </th>
+              <th className="px-6 py-3 text-left font-semibold text-foreground">
+                Student ID
+              </th>
+              <th className="px-6 py-3 text-left font-semibold text-foreground">
+                Device ID
+              </th>
+              <th className="px-6 py-3 text-left font-semibold text-foreground">
+                Card ID
+              </th>
+              <th className="px-6 py-3 text-left font-semibold text-foreground">
+                Course Code
+              </th>
+              <th className="px-6 py-3 text-left font-semibold text-foreground">
+                Timestamp
+              </th>
             </tr>
           </thead>
           <tbody>
-            {attendance.map((record) => (
-              <tr key={record.id} className="border-b border-border hover:bg-background/50 transition-colors">
-                <td className="px-6 py-4 text-foreground font-medium">{record.studentName}</td>
-                <td className="px-6 py-4 text-foreground font-medium">{record.studentId}</td>
+            {filteredAttendance.map((record) => (
+              <tr
+                key={record.id}
+                className="border-b border-border hover:bg-background/50 transition-colors"
+              >
+                <td className="px-6 py-4 text-foreground font-medium">
+                  {record.studentName}
+                </td>
+                <td className="px-6 py-4 text-foreground font-medium">
+                  {record.studentId}
+                </td>
                 <td className="px-6 py-4 text-foreground">{record.deviceId}</td>
                 <td className="px-6 py-4 text-foreground">{record.cardId}</td>
                 <td className="px-6 py-4 text-foreground font-mono text-sm">
+                  {record.courseCode}
+                </td>
+                <td className="px-6 py-4 text-foreground font-mono text-sm">
                   {new Date(record.timestamp).toLocaleString()}
                 </td>
-                {/* <td className="px-6 py-4 text-foreground font-mono text-sm">
-                  {record.check_out_time
-                    ? new Date(record.check_out_time).toLocaleTimeString()
-                    : '—'}
-                </td> */}
-                {/* <td className="px-6 py-4 text-muted-foreground">
-                  {record.duration_minutes
-                    ? `${Math.floor(record.duration_minutes / 60)}h ${record.duration_minutes % 60}m`
-                    : '—'}
-                </td> */}
-                {/* <td className="px-6 py-4 text-muted-foreground">{new Date(record.createdAt).toLocaleTimeString()}</td> */}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {attendance.length === 0 && !loading && (
+      {filteredAttendance.length === 0 && !loading && (
         <div className="text-center py-12">
           <p className="text-muted-foreground">No attendance records found</p>
         </div>

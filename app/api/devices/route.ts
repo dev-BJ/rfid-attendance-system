@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, systemDevices } from '@/lib/db';
+import { db, systemDevice } from '@/lib/db';
 import type { SystemDevice } from '@/lib/db/schema';
 
 interface SystemDeviceResponse {
@@ -15,7 +15,7 @@ interface SystemDeviceResponse {
 
 export async function GET(): Promise<NextResponse<SystemDevice[]>> {
   try {
-    const devices = await db.select().from(systemDevices);
+    const devices = await db.select().from(systemDevice);
     return NextResponse.json(devices);
   } catch (error) {
     console.error('Error fetching devices:', error);
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Check if device_id already exists
     const { eq } = await import('drizzle-orm');
 
-    const [existingDevice] = await db.select().from(systemDevices).where(eq(systemDevices.deviceId, device_id)).limit(1);
+    const [existingDevice] = await db.select().from(systemDevice).where(eq(systemDevice.deviceId, device_id)).limit(1);
 
     if (existingDevice) {
       return NextResponse.json(
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const result = await db.insert(systemDevices).values({
+    const result = await db.insert(systemDevice).values({
       deviceId: device_id,
       faculty: faculty,
       departments: departments,
@@ -82,7 +82,7 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
 
     const { eq } = await import('drizzle-orm');
 
-    const existingDevice = await db.select().from(systemDevices).where(eq(systemDevices.deviceId, device_id)).limit(1).then(results => results[0]);
+    const existingDevice = await db.select().from(systemDevice).where(eq(systemDevice.deviceId, device_id)).limit(1).then(results => results[0]);
 
     if (!existingDevice) {
       return NextResponse.json(
@@ -91,12 +91,12 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    await db.update(systemDevices)
+    await db.update(systemDevice)
       .set({
         ...updates,
         updatedAt: new Date(),
       })
-      .where(eq(systemDevices.deviceId, device_id));
+      .where(eq(systemDevice.deviceId, device_id));
 
     return NextResponse.json({
       success: true,
@@ -125,7 +125,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
 
     const { eq } = await import('drizzle-orm');
 
-    const existingDevice = await db.select().from(systemDevices).where(eq(systemDevices.deviceId, device_id)).limit(1).then(results => results[0]);
+    const existingDevice = await db.select().from(systemDevice).where(eq(systemDevice.deviceId, device_id)).limit(1).then(results => results[0]);
 
     if (!existingDevice) {
       return NextResponse.json(
@@ -134,8 +134,8 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    await db.delete(systemDevices)
-      .where(eq(systemDevices.deviceId, device_id));
+    await db.delete(systemDevice)
+      .where(eq(systemDevice.deviceId, device_id));
 
     return NextResponse.json({
       success: true,

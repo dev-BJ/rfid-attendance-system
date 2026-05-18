@@ -73,10 +73,10 @@ export async function POST(
     if (attendance_taken) {
       return NextResponse.json(
         {
-          success: false,
+          success: true,
           message: "Attendance has previously been taken",
         },
-        { status: 400 },
+        { status: 201 },
       );
     }
 

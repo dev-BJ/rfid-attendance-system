@@ -101,29 +101,29 @@ export async function POST(
     // console.log(data)
 
     after(async () => {
-  try {
-    console.log("SMS URL:", smsApiUrl);
-    console.log("SMS payload:", data);
+      try {
+        // console.log("SMS URL:", smsApiUrl);
+        // console.log("SMS payload:", data);
 
-    const response = await fetch(smsApiUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${smsApiToken}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(data),
+        const response = await fetch(smsApiUrl, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${smsApiToken}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        console.log("SMS status:", response.status);
+
+        const text = await response.text();
+        console.log("SMS response:", text);
+      } catch (error: any) {
+        console.error("SMS Error:", error);
+        console.error("Cause:", error?.cause);
+      }
     });
-
-    console.log("SMS status:", response.status);
-
-    const text = await response.text();
-    console.log("SMS response:", text);
-  } catch (error: any) {
-    console.error("SMS Error:", error);
-    console.error("Cause:", error?.cause);
-  }
-});
 
     return NextResponse.json(
       {

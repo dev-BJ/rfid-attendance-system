@@ -21,7 +21,7 @@ declare global {
 }
 
 let db: ReturnType<typeof pgDrizzle | typeof neonDrizzle>;
-console.log('[DB Init] NODE_ENV:', process.env.NODE_ENV);
+// console.log('[DB Init] NODE_ENV:', process.env.NODE_ENV);
 
 if (process.env.USE_LOCAL_DB == "true") {
   const pool = new Pool({

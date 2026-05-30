@@ -3,8 +3,7 @@ import { drizzle as neonDrizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 import { Pool } from "pg";
 import * as schema from "./schema";
-import * as dotenv from 'dotenv';
-import * as path from 'path';
+import * as dotenv from "dotenv";
 
 // Load environment variables from .env file
 // dotenv.config({ path: path.resolve(process.cwd(), '.env') });
@@ -29,14 +28,22 @@ declare global {
 let db: ReturnType<typeof pgDrizzle | typeof neonDrizzle>;
 
 if (process.env.USE_LOCAL_DB == "true") {
+  if (!process.env.LOCAL_DATABASE_URL) {
+    throw new Error("LOCAL_DATABASE_URL is required when USE_LOCAL_DB is true");
+  }
+
   const pool = new Pool({
-    connectionString: process.env.LOCAL_DATABASE_URL!,
+    connectionString: process.env.LOCAL_DATABASE_URL,
   });
   db = pgDrizzle(pool, {
     schema,
   });
 } else {
-  const sql = neon(process.env.CLOUD_DATABASE_URL!);
+  if (!process.env.CLOUD_DATABASE_URL) {
+    throw new Error("CLOUD_DATABASE_URL is required when USE_LOCAL_DB is not true");
+  }
+
+  const sql = neon(process.env.CLOUD_DATABASE_URL);
   db = neonDrizzle(sql, {
     schema,
   });

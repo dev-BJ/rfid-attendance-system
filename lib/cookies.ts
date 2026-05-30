@@ -2,7 +2,8 @@
 
 import { cookies } from 'next/headers';
 
-const SESSION_COOKIE_NAME = process.env.NEXT_PUBLIC_SESSION_COOKIE_NAME!;
+const SESSION_COOKIE_NAME =
+  process.env.NEXT_PUBLIC_SESSION_COOKIE_NAME || "auth_session";
 const SESSION_MAX_AGE = 30 * 24 * 60 * 60; // 30 days in seconds
 
 export async function setSessionCookie(user_id: string): Promise<void> {

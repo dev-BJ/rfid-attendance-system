@@ -1,6 +1,6 @@
 {
-  "id": "f0e8354f-8c19-4d24-a471-f089e49d1e4d",
-  "prevId": "341d68e2-87c6-4e93-82ce-ecafdd5a1ce9",
+  "id": "7a6f269f-0e19-420d-b38d-01d6eac93228",
+  "prevId": "f0e8354f-8c19-4d24-a471-f089e49d1e4d",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -97,6 +97,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "course_code": {
+          "name": "course_code",
+          "type": "varchar(155)",
+          "primaryKey": false,
+          "notNull": true
         },
         "institution": {
           "name": "institution",

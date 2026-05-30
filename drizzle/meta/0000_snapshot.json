@@ -1,16 +1,62 @@
 {
-  "id": "34573377-65bf-4989-a9c2-f8b5beffcf93",
+  "id": "341d68e2-87c6-4e93-82ce-ecafdd5a1ce9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.institutions": {
+      "name": "institutions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "institution_code": {
+          "name": "institution_code",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "institution_name": {
+          "name": "institution_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "institutions_institution_code_unique": {
+          "name": "institutions_institution_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "institution_code"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.student_attendance": {
       "name": "student_attendance",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "bigserial",
           "primaryKey": true,
           "notNull": true
         },
@@ -19,13 +65,6 @@
           "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true
-        },
-        "course_code": {
-          "name": "course_code",
-          "type": "varchar(155)",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'COM'"
         },
         "student_id": {
           "name": "student_id",
@@ -58,10 +97,88 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "course_code": {
+          "name": "course_code",
+          "type": "varchar(155)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "institution": {
+          "name": "institution",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lecturer_id": {
+          "name": "lecturer_id",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
+      "indexes": {
+        "student_attendance_institution_idx": {
+          "name": "student_attendance_institution_idx",
+          "columns": [
+            {
+              "expression": "institution",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "student_attendance_lecturer_id_idx": {
+          "name": "student_attendance_lecturer_id_idx",
+          "columns": [
+            {
+              "expression": "lecturer_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "student_attendance_institution_institutions_institution_code_fk": {
+          "name": "student_attendance_institution_institutions_institution_code_fk",
+          "tableFrom": "student_attendance",
+          "tableTo": "institutions",
+          "columnsFrom": [
+            "institution"
+          ],
+          "columnsTo": [
+            "institution_code"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        },
+        "student_attendance_lecturer_id_users_user_id_fk": {
+          "name": "student_attendance_lecturer_id_users_user_id_fk",
+          "tableFrom": "student_attendance",
+          "tableTo": "users",
+          "columnsFrom": [
+            "lecturer_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -74,13 +191,19 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "bigserial",
           "primaryKey": true,
           "notNull": true
         },
-        "device_id": {
-          "name": "device_id",
+        "institution": {
+          "name": "institution",
           "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lecturer_id": {
+          "name": "lecturer_id",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true
         },
@@ -120,13 +243,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "status": {
-          "name": "status",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'active'"
-        },
         "registered_at": {
           "name": "registered_at",
           "type": "timestamp",
@@ -140,27 +256,117 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "device_id": {
+          "name": "device_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
+      "indexes": {
         "student_card_card_id_unique": {
           "name": "student_card_card_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
-            "card_id"
-          ]
+            {
+              "expression": "card_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "student_card_student_id_unique": {
           "name": "student_card_student_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
-            "student_id"
-          ]
+            {
+              "expression": "student_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "student_card_institution_idx": {
+          "name": "student_card_institution_idx",
+          "columns": [
+            {
+              "expression": "institution",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "student_card_lecturer_id_idx": {
+          "name": "student_card_lecturer_id_idx",
+          "columns": [
+            {
+              "expression": "lecturer_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
+      "foreignKeys": {
+        "student_card_institution_institutions_institution_code_fk": {
+          "name": "student_card_institution_institutions_institution_code_fk",
+          "tableFrom": "student_card",
+          "tableTo": "institutions",
+          "columnsFrom": [
+            "institution"
+          ],
+          "columnsTo": [
+            "institution_code"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        },
+        "student_card_lecturer_id_users_user_id_fk": {
+          "name": "student_card_lecturer_id_users_user_id_fk",
+          "tableFrom": "student_card",
+          "tableTo": "users",
+          "columnsFrom": [
+            "lecturer_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -171,7 +377,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "bigserial",
           "primaryKey": true,
           "notNull": true
         },
@@ -199,6 +405,18 @@
           "primaryKey": false,
           "notNull": true
         },
+        "institution": {
+          "name": "institution",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lecturer_id": {
+          "name": "lecturer_id",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -214,15 +432,192 @@
           "default": "now()"
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
+      "indexes": {
         "system_device_device_id_unique": {
           "name": "system_device_device_id_unique",
+          "columns": [
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "system_device_institution_idx": {
+          "name": "system_device_institution_idx",
+          "columns": [
+            {
+              "expression": "institution",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "system_device_lecturer_id_idx": {
+          "name": "system_device_lecturer_id_idx",
+          "columns": [
+            {
+              "expression": "lecturer_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "system_device_institution_institutions_institution_code_fk": {
+          "name": "system_device_institution_institutions_institution_code_fk",
+          "tableFrom": "system_device",
+          "tableTo": "institutions",
+          "columnsFrom": [
+            "institution"
+          ],
+          "columnsTo": [
+            "institution_code"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        },
+        "system_device_lecturer_id_users_user_id_fk": {
+          "name": "system_device_lecturer_id_users_user_id_fk",
+          "tableFrom": "system_device",
+          "tableTo": "users",
+          "columnsFrom": [
+            "lecturer_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "courses": {
+          "name": "courses",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'null'::jsonb"
+        },
+        "role": {
+          "name": "role",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "institution": {
+          "name": "institution",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "users_institution_idx": {
+          "name": "users_institution_idx",
+          "columns": [
+            {
+              "expression": "institution",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "users_institution_institutions_institution_code_fk": {
+          "name": "users_institution_institutions_institution_code_fk",
+          "tableFrom": "users",
+          "tableTo": "institutions",
+          "columnsFrom": [
+            "institution"
+          ],
+          "columnsTo": [
+            "institution_code"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_user_id_unique": {
+          "name": "users_user_id_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "device_id"
+            "user_id"
           ]
         }
       },

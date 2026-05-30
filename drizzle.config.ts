@@ -6,6 +6,6 @@ export default defineConfig({
   schema: ['./lib/db/schema.ts', './lib/db/relations.ts'],
   out: './drizzle',
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    url: process.env.USE_LOCAL_DB! == 'true' ? process.env.LOCAL_DATABASE_URL! : process.env.CLOUD_DATABASE_URL!,
   },
 });

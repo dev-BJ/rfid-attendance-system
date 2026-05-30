@@ -1,0 +1,1 @@
+ALTER TABLE "student_attendance" DROP COLUMN "course_code";

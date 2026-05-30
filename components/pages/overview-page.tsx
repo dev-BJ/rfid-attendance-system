@@ -99,8 +99,8 @@ export default function OverviewPage() {
       <Card className="p-6 bg-card border-border">
         <h2 className="text-xl font-semibold text-foreground mb-4">Recent Attendance</h2>
         <div className="space-y-3 max-h-64 overflow-y-auto">
-          {attendance.slice(0, 8).map((record) => (
-            <div key={record.id} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
+          {attendance.slice(0, 8).map((record, index) => (
+            <div key={index} className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
               <div>
                 <p className="text-sm font-medium text-foreground">{record.studentId}</p>
                 <p className="text-xs text-muted-foreground">{new Date(record.timestamp).toLocaleTimeString()}</p>

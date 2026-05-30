@@ -1,39 +1,52 @@
-'use client';
+"use client";
 
-import OverviewPage from './pages/overview-page';
-import DevicesPage from './pages/devices-page';
-import StudentCardsPage from './pages/student-cards-page';
-import AttendancePage from './pages/attendance-page';
-import AnalyticsPage from './pages/analytics-page';
-import SettingsPage from './pages/settings-page';
+import OverviewPage from "./pages/overview-page";
+import DevicesPage from "./pages/devices-page";
+import StudentCardsPage from "./pages/student-cards-page";
+import AttendancePage from "./pages/attendance-page";
+import AnalyticsPage from "./pages/analytics-page";
+import SettingsPage from "./pages/settings-page";
+import LecturersPage from "./pages/lecturers-page";
+import { useUserContext } from "@/lib/context/users";
 
 interface DashboardContentProps {
   activeTab: string;
+  // setUser: (user: string) => any;
 }
 
 export default function DashboardContent({ activeTab }: DashboardContentProps) {
+  const { setUser } = useUserContext();
   const renderPage = () => {
     switch (activeTab) {
-      case 'overview':
+      case "overview":
         return <OverviewPage />;
-      case 'devices':
+      case "devices":
         return <DevicesPage />;
-      case 'cards':
+      case "cards":
         return <StudentCardsPage />;
-      case 'attendance':
+      case "attendance":
         return <AttendancePage />;
-      case 'analytics':
+      case "analytics":
         return <AnalyticsPage />;
-      case 'settings':
+      case "settings":
         return <SettingsPage />;
+      case "lecturers":
+        return <LecturersPage />;
+      case "logout":
+        fetch("/api/auth/logout", {
+          method: "POST",
+        }).then((res) => {
+          if (res.ok) {
+            // setUser(null);
+            window.location.reload();
+          }
+        });
       default:
         return <OverviewPage />;
     }
   };
 
   return (
-    <main className="flex-1 overflow-auto bg-background">
-      {renderPage()}
-    </main>
+    <main className="flex-1 overflow-auto bg-background">{renderPage()}</main>
   );
 }

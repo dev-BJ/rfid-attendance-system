@@ -207,9 +207,9 @@ export default function AttendancePage() {
 
       {/* Attendance Table */}
       <div className="overflow-x-auto rounded-lg border border-border">
-        <table className="w-full text-sm">
+        <table className="min-w-max w-full text-sm">
           <thead>
-            <tr className="border-b border-border bg-muted/50">
+            <tr className="border-b border-border bg-muted/50 whitespace-nowrap">
               <th className="px-6 py-3 text-left font-semibold text-foreground">
                 Student Name
               </th>
@@ -231,9 +231,9 @@ export default function AttendancePage() {
             </tr>
           </thead>
           <tbody>
-            {filteredAttendance.map((record) => (
+            {filteredAttendance.map((record, index) => (
               <tr
-                key={record.id}
+                key={index}
                 className="border-b border-border hover:bg-background/50 transition-colors"
               >
                 <td className="px-6 py-4 text-foreground font-medium">

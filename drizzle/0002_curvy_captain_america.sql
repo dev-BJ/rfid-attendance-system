@@ -1,0 +1,1 @@
+ALTER TABLE "student_attendance" ADD COLUMN "course_code" varchar(155) NOT NULL;

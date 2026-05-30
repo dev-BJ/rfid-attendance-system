@@ -3,6 +3,11 @@ import { drizzle as neonDrizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 import { Pool } from "pg";
 import * as schema from "./schema";
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load environment variables from .env file
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 /**
  * Database connection setup
@@ -21,7 +26,6 @@ declare global {
 }
 
 let db: ReturnType<typeof pgDrizzle | typeof neonDrizzle>;
-// console.log('[DB Init] NODE_ENV:', process.env.NODE_ENV);
 
 if (process.env.USE_LOCAL_DB == "true") {
   const pool = new Pool({

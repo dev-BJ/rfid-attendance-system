@@ -88,6 +88,8 @@ export async function POST(
       studentName: card.studentName,
       deviceId: device_id,
       timestamp: checkInDate.toISOString(),
+      institution: card.institution,
+      lecturer_id: card.lecturer_id,
     });
 
     const data = {

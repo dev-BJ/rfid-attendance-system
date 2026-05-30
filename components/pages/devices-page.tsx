@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 // import { SystemDevice } from '@/lib/types';
 import type { SystemDevice } from '@/lib/db';
 import { Wifi, Plus, Trash2, Edit2 } from 'lucide-react';
+import { useUserContext } from '@/lib/context/users';
 
 export default function DevicesPage() {
   const [devices, setDevices] = useState<SystemDevice[]>([]);
@@ -18,6 +19,7 @@ export default function DevicesPage() {
     departments: '',
     levels: '',
   });
+  const { user } = useUserContext();
 
   useEffect(() => {
     fetchDevices();
@@ -82,25 +84,33 @@ export default function DevicesPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-4xl font-bold text-foreground">Devices</h1>
-          <p className="text-muted-foreground mt-2">Manage RFID scanning devices</p>
+          <p className="text-muted-foreground mt-2">
+            Manage RFID scanning devices
+          </p>
         </div>
-        <Button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Device
-        </Button>
+        {user && user.role !== "admin" && (
+          <Button
+            onClick={() => setShowForm(!showForm)}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Device
+          </Button>
+        )}
       </div>
 
       {/* Add Device Form */}
       {showForm && (
         <Card className="p-6 bg-card border-border mb-8">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Register New Device</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-4">
+            Register New Device
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Faculty</label>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Faculty
+                </label>
                 <Input
                   type="text"
                   placeholder="e.g., SCSS"
@@ -113,7 +123,9 @@ export default function DevicesPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Device ID</label>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Device ID
+                </label>
                 <Input
                   type="text"
                   placeholder="e.g., device-001"
@@ -126,7 +138,9 @@ export default function DevicesPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Departments</label>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Departments
+                </label>
                 <Input
                   type="text"
                   placeholder="e.g., COM"
@@ -139,7 +153,9 @@ export default function DevicesPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Levels</label>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Levels
+                </label>
                 <Input
                   type="text"
                   placeholder="e.g., 100v, 200v"
@@ -170,9 +186,9 @@ export default function DevicesPage() {
 
       {/* Devices List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {devices.map((device) => (
+        {devices.map((device, i) => (
           <Card
-            key={device.id}
+            key={i}
             className="p-6 bg-card border-border hover:border-accent transition-colors"
           >
             <div className="flex items-start justify-between mb-4">
@@ -181,7 +197,9 @@ export default function DevicesPage() {
                   <Wifi className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">{device.deviceId}</h3>
+                  <h3 className="font-semibold text-foreground">
+                    {device.deviceId}
+                  </h3>
                   {/* <h3 className="font-semibold text-foreground">{device.device_name}</h3> */}
                   {/* <p className="text-xs text-muted-foreground">{device.device_id}</p> */}
                 </div>
@@ -199,8 +217,13 @@ export default function DevicesPage() {
             </div>
 
             <div className="text-sm text-muted-foreground mb-4">
-              <p><span className="font-medium">Departments:</span> {device.departments}</p>
-              <p><span className="font-medium">Levels:</span> {device.levels}</p>
+              <p>
+                <span className="font-medium">Departments:</span>{" "}
+                {device.departments}
+              </p>
+              <p>
+                <span className="font-medium">Levels:</span> {device.levels}
+              </p>
             </div>
 
             {/* <div className="flex gap-2">
